@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties("app.api")
+@ConfigurationProperties(prefix = "app.api")
 @ConditionalOnProperty(name="app.api.swagger.enable", havingValue = "true", matchIfMissing = false)
 public class SwaggerConfigs{
 

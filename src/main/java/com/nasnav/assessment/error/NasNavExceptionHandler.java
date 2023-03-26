@@ -1,8 +1,9 @@
 package com.nasnav.assessment.error;
 
-import static com.nasnav.assessment.error.ExceptionMessages.SYSTEM_ERROR;
+import static com.nasnav.assessment.strings.ExceptionMessages.SYSTEM_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,7 +40,12 @@ public class NasNavExceptionHandler {
         SYSTEM_ERROR);
   }
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler({UnAuthenticatedException.class})
+  public void handleUnAuthenticatedException(UnAuthenticatedException e, HttpServletResponse response, Locale locale)
+      throws IOException {
+    handleExceptionsWithMessageSource(e, response, locale, UNAUTHORIZED,null);
+  }
+
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public final void handleMethodArgumentsNotValidException(MethodArgumentNotValidException ex,
       HttpServletResponse response, Locale locale) throws IOException {
@@ -48,8 +55,16 @@ public class NasNavExceptionHandler {
       String errorMessage = error.getDefaultMessage();
       errors.put(fieldName, errorMessage);
     });
-    handleExceptions(ex, response, BAD_REQUEST, errors.toString(), BAD_REQUEST.toString());
+    handleExceptions(ex, response, BAD_REQUEST, errors.toString(), BAD_REQUEST.name());
   }
+
+
+  @ExceptionHandler(AccessDeniedException.class)
+  private void handleAccessDeniedException(AccessDeniedException e, HttpServletResponse response)
+      throws IOException {
+    handleExceptions(e, response, UNAUTHORIZED, e.getMessage(), "NOT_AUTHORIZED");
+  }
+
 
 
   private void handleExceptionsWithMessageSource(

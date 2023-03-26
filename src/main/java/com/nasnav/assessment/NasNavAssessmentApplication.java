@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NasNavAssessmentApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("server.servlet.context-path", "/nas-nav");
 		SpringApplication.run(NasNavAssessmentApplication.class, args);
 	}
 

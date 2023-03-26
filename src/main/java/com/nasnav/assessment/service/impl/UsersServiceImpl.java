@@ -1,12 +1,15 @@
 package com.nasnav.assessment.service.impl;
 
-import static com.nasnav.assessment.error.ExceptionMessages.USER_NOT_FOUND;
+import static com.nasnav.assessment.strings.ExceptionMessages.USER_NOT_FOUND;
 
 import com.nasnav.assessment.dto.UsersDTO;
+import com.nasnav.assessment.dto.payload.request.RegisterRequest;
 import com.nasnav.assessment.error.ApplicationException;
 import com.nasnav.assessment.mapper.UsersMapper;
+import com.nasnav.assessment.model.Users;
 import com.nasnav.assessment.repository.UsersRepository;
 import com.nasnav.assessment.service.IUsersService;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,16 @@ public class UsersServiceImpl implements IUsersService {
     return usersMapper.toDTO(usersRepository.findByEmail(email).orElseThrow(
         () -> new ApplicationException(USER_NOT_FOUND)
     ));
+  }
+
+  @Override
+  public boolean isEmailExist(String email) {
+    return usersRepository.existsByEmail(email);
+  }
+
+  @Override
+  public UsersDTO saveUser(RegisterRequest registerRequest){
+    return usersMapper.toDTO(usersRepository.save(usersMapper.toEntity(registerRequest)));
   }
 
 }
