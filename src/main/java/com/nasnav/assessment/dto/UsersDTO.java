@@ -1,5 +1,6 @@
 package com.nasnav.assessment.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nasnav.assessment.enumeration.Roles;
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsersDTO {
 
-  private long id;
+  private Long id;
 
   @NotBlank(message = "USER_INVALID_INPUT_01")
   private String name;
@@ -27,6 +28,7 @@ public class UsersDTO {
   @Column(unique = true)
   private String email;
 
+  @JsonIgnore
   @NotBlank(message = "USER_INVALID_INPUT_03")
   private String password;
 

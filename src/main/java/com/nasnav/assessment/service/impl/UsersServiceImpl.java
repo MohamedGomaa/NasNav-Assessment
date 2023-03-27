@@ -6,10 +6,9 @@ import com.nasnav.assessment.dto.UsersDTO;
 import com.nasnav.assessment.dto.payload.request.RegisterRequest;
 import com.nasnav.assessment.error.ApplicationException;
 import com.nasnav.assessment.mapper.UsersMapper;
-import com.nasnav.assessment.model.Users;
 import com.nasnav.assessment.repository.UsersRepository;
 import com.nasnav.assessment.service.IUsersService;
-import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class UsersServiceImpl implements IUsersService {
   @Override
   public UsersDTO getUserByEmail(String email){
     return usersMapper.toDTO(usersRepository.findByEmail(email).orElseThrow(
-        () -> new ApplicationException(USER_NOT_FOUND)
+        () -> new EntityNotFoundException(USER_NOT_FOUND)
     ));
   }
 

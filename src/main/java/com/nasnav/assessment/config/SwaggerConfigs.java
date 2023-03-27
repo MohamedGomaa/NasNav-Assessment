@@ -22,17 +22,17 @@ import java.util.List;
 @ConditionalOnProperty(name="app.api.swagger.enable", havingValue = "true", matchIfMissing = false)
 public class SwaggerConfigs{
 
-  @Value("app.api.version")
+  @Value("${app.api.version}")
   private String version;
-  @Value("app.api.title")
+  @Value("${app.api.title}")
   private String title;
-  @Value("app.api.description")
+  @Value("${app.api.description}")
   private String description;
-  @Value("app.api.basePackage")
+  @Value("${app.api.base-package}")
   private String basePackage;
-  @Value("app.api.contact-name")
+  @Value("${app.api.contact-name}")
   private String contactName;
-  @Value("app.api.contact-email")
+  @Value("${app.api.contact-email}")
   private String contactEmail;
 
   @Bean

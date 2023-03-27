@@ -1,5 +1,10 @@
 package com.nasnav.assessment.model;
 
+import static com.nasnav.assessment.strings.ExceptionMessages.USER_INVALID_INPUT_01;
+import static com.nasnav.assessment.strings.ExceptionMessages.USER_INVALID_INPUT_02;
+import static com.nasnav.assessment.strings.ExceptionMessages.USER_INVALID_INPUT_03;
+import static com.nasnav.assessment.strings.ExceptionMessages.USER_INVALID_INPUT_04;
+
 import com.nasnav.assessment.enumeration.Roles;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -25,24 +30,24 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
+public class Users{
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
+  private Long id;
 
-  @NotBlank(message = "Name is empty or null.")
+  @NotBlank(message = USER_INVALID_INPUT_01)
   private String name;
 
-  @NotBlank(message = "Name is empty or null.")
+  @NotBlank(message = USER_INVALID_INPUT_02)
   @Email
   @Column(unique = true)
   private String email;
 
-  @NotBlank(message = "Password is null or empty.")
+  @NotBlank(message = USER_INVALID_INPUT_03)
   private String password;
 
-  @NotNull(message = "Role is null or empty")
+  @NotNull(message = USER_INVALID_INPUT_04)
   @Enumerated(EnumType.STRING)
   private Roles userRole;
 }

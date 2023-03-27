@@ -41,17 +41,7 @@ public class AuthenticationController {
   @ApiOperation("Register")
   @PostMapping("/register")
   public ResponseEntity<?> registerUser( @RequestBody @Valid RegisterRequest signupRequest) {
-    try{
       return ResponseEntity.ok(authenticationService.register(signupRequest));
-    }catch(EntityNotFoundException e) {
-      throw new EntityNotFoundException(e.getMessage());
-    }catch(EmailAlreadyExistException e) {
-      throw new EmailAlreadyExistException(e.getMessage());
-    }catch(MethodArgumentsNotValidException e) {
-      throw new MethodArgumentsNotValidException(e.getMessage());
-    }catch(Exception e) {
-      throw new ApplicationException(SYSTEM_ERROR);
-    }
   }
 
 }

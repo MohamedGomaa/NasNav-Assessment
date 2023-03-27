@@ -1,5 +1,6 @@
 package com.nasnav.assessment.error;
 
+import static com.nasnav.assessment.strings.ExceptionMessages.MAX_UPLOAD_SIZE_EXCEEDED;
 import static com.nasnav.assessment.strings.ExceptionMessages.SYSTEM_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -20,7 +21,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j
@@ -40,10 +41,34 @@ public class NasNavExceptionHandler {
         SYSTEM_ERROR);
   }
 
-  @ExceptionHandler({UnAuthenticatedException.class})
-  public void handleUnAuthenticatedException(UnAuthenticatedException e, HttpServletResponse response, Locale locale)
+  @ExceptionHandler({ApplicationException.class})
+  public void handleAllApplicationException(ApplicationException e, HttpServletResponse response,
+      Locale locale)
       throws IOException {
-    handleExceptionsWithMessageSource(e, response, locale, UNAUTHORIZED,null);
+    handleExceptionsWithMessageSource(e, response, locale, INTERNAL_SERVER_ERROR, null);
+  }
+
+
+  @ExceptionHandler({MaxUploadSizeExceededException.class})
+  public void handleAllMaxUploadSizeExceededException(MaxUploadSizeExceededException e,
+      HttpServletResponse response, Locale locale)
+      throws IOException {
+    handleExceptionsWithMessageSource(e, response, locale, BAD_REQUEST,
+        MAX_UPLOAD_SIZE_EXCEEDED);
+  }
+
+  @ExceptionHandler({ImageTypeNotSupportedException.class})
+  public void handleAllImageTypeNotSupportedException(ImageTypeNotSupportedException e,
+      HttpServletResponse response, Locale locale)
+      throws IOException {
+    handleExceptionsWithMessageSource(e, response, locale, BAD_REQUEST, null);
+  }
+
+  @ExceptionHandler({UnAuthenticatedException.class})
+  public void handleUnAuthenticatedException(UnAuthenticatedException e,
+      HttpServletResponse response, Locale locale)
+      throws IOException {
+    handleExceptionsWithMessageSource(e, response, locale, UNAUTHORIZED, null);
   }
 
   @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -59,12 +84,11 @@ public class NasNavExceptionHandler {
   }
 
 
-  @ExceptionHandler(AccessDeniedException.class)
+  @ExceptionHandler({AccessDeniedException.class})
   private void handleAccessDeniedException(AccessDeniedException e, HttpServletResponse response)
       throws IOException {
-    handleExceptions(e, response, UNAUTHORIZED, e.getMessage(), "NOT_AUTHORIZED");
+    handleExceptions(e, response, UNAUTHORIZED, e.getMessage(), "ACCESS_DENIED");
   }
-
 
 
   private void handleExceptionsWithMessageSource(

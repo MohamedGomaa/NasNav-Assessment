@@ -1,13 +1,16 @@
 package com.nasnav.assessment.service.impl;
 
 import static com.nasnav.assessment.strings.ExceptionMessages.EMAIL_ALREADY_EXIST;
+import static com.nasnav.assessment.strings.ExceptionMessages.SYSTEM_ERROR;
 
 import com.nasnav.assessment.dto.UsersDTO;
 import com.nasnav.assessment.dto.payload.request.LoginRequest;
 import com.nasnav.assessment.dto.payload.request.RegisterRequest;
 import com.nasnav.assessment.dto.payload.response.JwtResponse;
 import com.nasnav.assessment.enumeration.Roles;
+import com.nasnav.assessment.error.ApplicationException;
 import com.nasnav.assessment.error.EmailAlreadyExistException;
+import com.nasnav.assessment.error.MethodArgumentsNotValidException;
 import com.nasnav.assessment.error.UnAuthenticatedException;
 import com.nasnav.assessment.model.Users;
 import com.nasnav.assessment.security.JwtUtils;
@@ -17,6 +20,7 @@ import com.nasnav.assessment.service.IUsersService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,11 +61,22 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
   @Override
   public UsersDTO register(RegisterRequest signupRequest) {
-    if (usersService.isEmailExist(signupRequest.getEmail())) {
-      throw new EmailAlreadyExistException(EMAIL_ALREADY_EXIST);
+    try{
+      if (usersService.isEmailExist(signupRequest.getEmail())) {
+        throw new EmailAlreadyExistException(EMAIL_ALREADY_EXIST);
+      }
+      signupRequest.setPassword(encoder.encode(signupRequest.getPassword()));
+      return usersService.saveUser(signupRequest);
+    }catch(EntityNotFoundException e) {
+      throw new EntityNotFoundException(e.getMessage());
+    }catch(EmailAlreadyExistException e) {
+      throw new EmailAlreadyExistException(e.getMessage());
+    }catch(MethodArgumentsNotValidException e) {
+      throw new MethodArgumentsNotValidException(e.getMessage());
+    }catch(Exception e) {
+      throw new ApplicationException(SYSTEM_ERROR);
     }
-    signupRequest.setPassword(encoder.encode(signupRequest.getPassword()));
-    return usersService.saveUser(signupRequest);
+
   }
 
   @PostConstruct
