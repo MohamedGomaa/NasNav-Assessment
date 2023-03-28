@@ -5,6 +5,7 @@ import static com.nasnav.assessment.strings.ExceptionMessages.MEDIA_TYPE_NOT_SUP
 import com.nasnav.assessment.error.ImageTypeNotSupportedException;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class PictureUtils {
 
   @Value("${allowed.image.types}")
-  private String allowedTypes;
+  private final String allowedTypes;
+
+  public PictureUtils( @Value("${allowed.image.types}") String allowedTypes){
+    this.allowedTypes = allowedTypes;
+  }
 
   public void validatePicture(MultipartFile image){
     List<String> allowedTypesArr = Arrays.asList(allowedTypes.split(","));

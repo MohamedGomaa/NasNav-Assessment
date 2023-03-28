@@ -12,6 +12,7 @@ import static com.nasnav.assessment.strings.ExceptionMessages.SYSTEM_ERROR;
 import com.nasnav.assessment.dto.PictureDTO;
 import com.nasnav.assessment.enumeration.ImageCategory;
 import com.nasnav.assessment.error.ApplicationException;
+import com.nasnav.assessment.error.InvalidPictureOperationException;
 import com.nasnav.assessment.mapper.PictureMapper;
 import com.nasnav.assessment.model.Picture;
 import com.nasnav.assessment.repository.PictureRepository;
@@ -51,7 +52,7 @@ public class PictureServiceImpl implements IPictureService {
       return pictureMapper.toDTO(pictureRepository.save(pictureMapper.toEntity(pictureDTO)));
     } catch (Exception e) {
       log.error("Unable to upload image due to: [ " + e.getMessage() + " ]");
-      throw new InvalidPictureOperationEception(INVALID_PIC_OPERATION);
+      throw new InvalidPictureOperationException(INVALID_PIC_OPERATION);
     }
   }
 
@@ -61,6 +62,7 @@ public class PictureServiceImpl implements IPictureService {
     try {
       return pictureMapper.toDTOList(pictureRepository.findByPictureStatus(UNPROCESSED));
     } catch (Exception e) {
+      log.error("Unable to get all unprocessed images due to: [ "+e.getMessage()+" ]");
       throw new ApplicationException(SYSTEM_ERROR);
     }
   }
@@ -71,6 +73,7 @@ public class PictureServiceImpl implements IPictureService {
     try {
       return pictureMapper.toDTOList(pictureRepository.findByPictureStatus(APPROVED));
     } catch (Exception e) {
+      log.error("Unable to get all approved images due to: [ "+e.getMessage()+" ]");
       throw new ApplicationException(SYSTEM_ERROR);
     }
   }

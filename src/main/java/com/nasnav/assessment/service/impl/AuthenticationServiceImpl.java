@@ -1,6 +1,7 @@
 package com.nasnav.assessment.service.impl;
 
 import static com.nasnav.assessment.strings.ExceptionMessages.EMAIL_ALREADY_EXIST;
+import static com.nasnav.assessment.strings.ExceptionMessages.LOGIN_FAILURE;
 import static com.nasnav.assessment.strings.ExceptionMessages.SYSTEM_ERROR;
 
 import com.nasnav.assessment.dto.UsersDTO;
@@ -12,7 +13,6 @@ import com.nasnav.assessment.error.ApplicationException;
 import com.nasnav.assessment.error.EmailAlreadyExistException;
 import com.nasnav.assessment.error.MethodArgumentsNotValidException;
 import com.nasnav.assessment.error.UnAuthenticatedException;
-import com.nasnav.assessment.model.Users;
 import com.nasnav.assessment.security.JwtUtils;
 import com.nasnav.assessment.security.service.UserDetailsImpl;
 import com.nasnav.assessment.service.IAuthenticationService;
@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
       return new JwtResponse(jwt, userDetails.getUserId(), userDetails.getEmail(), roles);
     } catch (Exception e) {
       log.error(e.getMessage());
-      throw new UnAuthenticatedException(e.getMessage());
+      throw new UnAuthenticatedException(LOGIN_FAILURE);
     }
   }
 
@@ -71,8 +71,6 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
       throw new EntityNotFoundException(e.getMessage());
     }catch(EmailAlreadyExistException e) {
       throw new EmailAlreadyExistException(e.getMessage());
-    }catch(MethodArgumentsNotValidException e) {
-      throw new MethodArgumentsNotValidException(e.getMessage());
     }catch(Exception e) {
       throw new ApplicationException(SYSTEM_ERROR);
     }

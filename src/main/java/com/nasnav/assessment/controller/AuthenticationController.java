@@ -31,11 +31,7 @@ public class AuthenticationController {
   @ApiOperation("Log in")
   @PostMapping("/login")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-    try{
       return ResponseEntity.ok(authenticationService.authenticate(loginRequest));
-    }catch(Exception e) {
-      throw new UnAuthenticatedException(LOGIN_FAILURE);
-    }
   }
 
   @ApiOperation("Register")
